@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Image, StyleSheet, Text, View } from "react-native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useEffect, useState } from "react";
 
@@ -47,7 +47,9 @@ const AboutScreen = ({navigation}) => {
           {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
           </>
           :
-<></>
+          <>
+          <Image source={require('../assets/qr.png')} style={styles.image}/>
+          </>
           }
 
       </View>
@@ -62,7 +64,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     //justifyContent: 'center',
-  },
+  },image: {
+    flex: 1,
+    width: '60%',
+    height: null,
+    resizeMode: 'contain'
+}
 });
 
 export default AboutScreen;
