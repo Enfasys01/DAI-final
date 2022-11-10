@@ -1,64 +1,56 @@
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import * as Contacts from 'expo-contacts'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
-
-const getContacts = async () => {
-  const { status } = await Contacts.requestPermissionsAsync();
-  if (status === 'granted') {
-    const {data} = await Contacts.getContactsAsync({
-      fields: [Contacts.Fields.Emails],
-    })
-    return data
-  }
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('@storage_Key', value)
-    } catch (e) {
-      // saving error
-    }
-  }
-
-
-const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      if(value !== null) {
-        return(value)
-        // value previously stored
-      }
-    } catch(e) {
-        return('shit')
-      // error reading value
-    }
-  }
-
-  
 const EmergencyScreen = ({navigation}) => {
-    const [contacts, setContacts] = useState([])
-    useEffect(() => {
-        getContacts().then(res=>{setContacts(res)})
-    }, []);
     
     const [number, setNumber] = useState("");
     const[val, setVal] = useState(0)
-    useEffect(()=>{getData().then(res=>setVal(res))},[])
-    const setNewNumber = () =>{
-        storeData(number)
+    const[err, setErr] = useState('')
+    
+    const storeData = async (value) => {
+      try {
+        await AsyncStorage.setItem('@storage_Key', value)
+      } catch (e) {
+        // saving error
+      }
     }
-  return(
+    
+      
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@storage_Key')
+      if(value !== null) {
+        // value previously stored
+        return value
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
+  useEffect(()=>{
+    getData().then(val=>{setVal(val)})
+  },[number])
+
+    const handleButton = ()=>{
+      if(number.length>=8){
+        storeData(number).then(()=>{getData().then(val=>{setVal(val)})})
+        setErr('')
+      }else{
+        setErr('The phone number must have at least 8 digits')
+      }
+    }
+    return(
     <>
       <View style={styles.container}>
-        <Text>This is the Emergncy Number Screen</Text>
+        <Text>This is the Emergency Number Screen</Text>
         <Button title="Go back" onPress={()=>{navigation.goBack()}}/>
         <TextInput
         onChangeText={setNumber} value={number} placeholder='Enter Emergency Number' keyboardType="numeric"/>
-        <Button title="enter" onPress={setNewNumber}/>
-        <Text>{number}</Text>
-        <Text>{val}</Text>
+        {err!=''?<Text>{err}</Text>:''}
+        <Button title="enter" onPress={handleButton}/>
+        <Text>Current emergency number: {val}</Text>
       </View>
     </>
   )
