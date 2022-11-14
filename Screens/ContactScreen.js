@@ -1,7 +1,8 @@
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 import * as Contacts from 'expo-contacts'
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackgroundContext from "../Context/BackgroundContext";
 
 
 const getContacts = async () => {
@@ -33,6 +34,8 @@ const Contact = (props)=>{
   }
   
   const ContactScreen = ({navigation}) => {
+    const [bg, setBg] = useContext(BackgroundContext)
+
     const [contacts, setContacts] = useState([])
     const [emergency, setEmergency] = useState('')
     useEffect(() => {
@@ -56,12 +59,12 @@ const Contact = (props)=>{
       
       return(
         <>
-      <View style={styles.container}>
+<ImageBackground source={{uri: bg}} resizeMode='cover' style={styles.container}>
         <Text>This is the Contacts Screen</Text>
         <Text>{emergency}</Text>
         <Button title="Go back" onPress={()=>{navigation.goBack()}}/>
         <FlatList data={contacts} renderItem={render} keyExtractor={item=>item.id}/>
-      </View>
+      </ImageBackground>
     </>
   )
 }

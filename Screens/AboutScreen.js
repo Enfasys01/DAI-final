@@ -1,10 +1,13 @@
-import { Button, Image, StyleSheet, Text, View } from "react-native";
+import { Button, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import BackgroundContext from "../Context/BackgroundContext";
 
 
 const AboutScreen = ({navigation}) => {
   //qr stuff
+  const [bg, setBg] = useContext(BackgroundContext)
+
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [page, setPage] = useState(true)
@@ -34,7 +37,7 @@ const AboutScreen = ({navigation}) => {
 
   return(
     <>
-      <View style={styles.container}>
+<ImageBackground source={{uri: bg}} resizeMode='cover' style={styles.container}>
         <Text>This is the AboutScreen</Text>
         <Button onPress={()=>{navigation.goBack()}} title='Go Back'/>
         <Button title={page==true?'View QR':'Scan QR'} onPress={()=>{setPage(!page)}}/>
@@ -52,7 +55,7 @@ const AboutScreen = ({navigation}) => {
           </>
           }
 
-      </View>
+      </ImageBackground>
     </>
   )
 }

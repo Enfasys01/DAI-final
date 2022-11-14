@@ -1,10 +1,12 @@
-import { Button, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
-import { useEffect, useState } from "react";
+import { Button, FlatList, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState, useContext } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackgroundContext from "../Context/BackgroundContext";
 
 
 const EmergencyScreen = ({navigation}) => {
-    
+  const [bg, setBg] = useContext(BackgroundContext)
+
     const [number, setNumber] = useState("");
     const[val, setVal] = useState(0)
     const[err, setErr] = useState('')
@@ -43,15 +45,15 @@ const EmergencyScreen = ({navigation}) => {
     }
     return(
     <>
-      <View style={styles.container}>
-        <Text>This is the Emergency Number Screen</Text>
+<ImageBackground source={{uri: bg}} resizeMode='cover' style={styles.container}>
+          <Text>This is the Emergency Number Screen</Text>
         <Button title="Go back" onPress={()=>{navigation.goBack()}}/>
         <TextInput
         onChangeText={setNumber} value={number} placeholder='Enter Emergency Number' keyboardType="numeric"/>
         {err!=''?<Text>{err}</Text>:''}
         <Button title="enter" onPress={handleButton}/>
         <Text>Current emergency number: {val}</Text>
-      </View>
+      </ImageBackground>
     </>
   )
 }
